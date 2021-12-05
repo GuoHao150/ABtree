@@ -1,0 +1,19 @@
+[package]
+name = "ABtree"
+version = "0.1.0"
+edition = "2018"
+author = ["Dfree"]
+description = "AVL and Btree for rust"
+license = "MIT"
+include = [
+	"src/**/*",
+	"Cargo.toml",
+	"README.md"
+]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[profile.release]
+opt-level = 3
+
+[dependencies]

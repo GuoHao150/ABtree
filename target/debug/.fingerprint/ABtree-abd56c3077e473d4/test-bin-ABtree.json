@@ -1,0 +1,1 @@
+{"rustc":8364343145765662553,"features":"[]","target":10665593602215859199,"profile":14050059120794533848,"path":1036222786711178230,"deps":[[11661046955195137833,"ABtree",false,7272595437980335785]],"local":[{"CheckDepInfo":{"dep_info":"debug\\.fingerprint\\ABtree-abd56c3077e473d4\\dep-test-bin-ABtree"}}],"rustflags":[],"metadata":7797948686568424061,"config":0,"compile_kind":0}
