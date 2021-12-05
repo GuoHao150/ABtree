@@ -1,1 +1,0 @@
-initSidebarItems({"struct":[["AVL","An AVL balanced tree with owned nodes."],["BTree","A b-tree with owned nodes and what makes it different from the BTreeMap in std is it choose arbitrary number as the maximum number of keys in each node, as long as the number grater or equal to 3 Note if the number has been set to 3 it becomes a 2-3 tree"]]});
