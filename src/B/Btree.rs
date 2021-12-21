@@ -801,9 +801,27 @@ impl<K: Ord, V> BTree<K, V> {
         match inner_data {
             None => None,
             Some(ref data) => unsafe {
-                while let Some(d) = (*data.as_ptr()).iter().next() {
+                let mut iter = (*data.as_ptr()).iter();
+                while let Some(d) = iter.next() {
                     if d.key.eq(k) {
                         return Some(&d.value);
+                    }
+                }
+                None
+            },
+        }
+    }
+
+    fn _get_mut(&mut self, k: &K) -> Option<&mut V> {
+        let node = Node::moving_target(self.root_node, k);
+        let inner_data = Node::get_inner_data(node);
+        match inner_data {
+            None => None,
+            Some(ref data) => unsafe {
+                let mut iter_mut = (*data.as_ptr()).iter_mut();
+                while let Some(d) = iter_mut.next() {
+                    if d.key.eq(k) {
+                        return Some(&mut d.value);
                     }
                 }
                 None
@@ -1281,7 +1299,7 @@ impl<K: Ord, V> BTree<K, V> {
     }
 
     /// Give a reference of key try to return
-    /// the reference    
+    /// the reference of value
     ///
     /// # Example
     ///
@@ -1301,6 +1319,26 @@ impl<K: Ord, V> BTree<K, V> {
         } else {
             outs.pop().map(|o| o.1)
         }
+    }
+
+    /// Give a reference of key try to return
+    /// the mutable reference of value
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// use ABtree::BTree;
+    /// let mut b: BTree<i32, i32> = BTree::new(4);
+    /// let data = [(1, 1), (2, 2), (3, 3)];
+    /// for (k, v) in data {
+    ///     b.insert(k, v)
+    /// }
+    /// let v = b.get_mut(&2);
+    /// v.map(|i| *i += 10);
+    /// assert_eq!(b.get(&2), Some(&12));
+    /// ```   
+    pub fn get_mut(&mut self, k: &K) -> Option<&mut V> {
+        self._get_mut(k)
     }
 
     /// Updating the key with a new value

@@ -54,10 +54,7 @@ mod tests {
 
     #[test]
     fn btree_set() {
-        let data = vec![
-            (8, 8),
-            (12, 12),
-        ];
+        let data = vec![(8, 8), (12, 12)];
         let mut btr = BTree::from_iter(data);
         btr.set(8, 91);
         btr.set(10, 100);
@@ -86,7 +83,10 @@ mod tests {
         assert_eq!(btr.remove(&30), None);
 
         let v: Vec<_> = btr.into_iter().collect();
-        assert_eq!(v, vec![(8, 8), (12, 12), (18, 18), (21, 21), (22, 22), (23, 23)]);
+        assert_eq!(
+            v,
+            vec![(8, 8), (12, 12), (18, 18), (21, 21), (22, 22), (23, 23)]
+        );
     }
 
     #[test]
@@ -110,7 +110,10 @@ mod tests {
         assert_eq!(btr.remove(&30), None);
 
         let v: Vec<_> = btr.into_iter().collect();
-        assert_eq!(v, vec![(8, 8), (12, 12), (18, 18), (21, 21), (22, 22), (23, 23)]);
+        assert_eq!(
+            v,
+            vec![(8, 8), (12, 12), (18, 18), (21, 21), (22, 22), (23, 23)]
+        );
     }
 
     #[test]

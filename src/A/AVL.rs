@@ -513,6 +513,12 @@ impl<K: Ord, V> AVL<K, V> {
         }
     }
 
+    /// Given a ref key and return the mut ref of value
+    fn _get_mut(&mut self, k: &K) -> Option<&mut V> {
+        self._get_node(k)
+            .map(|n| unsafe { &mut (*n.as_ptr()).value })
+    }
+
     // When all heights have been updated call this methods to
     // find the first unbalanced node from bottom to top
     fn _get_unbalanced_node(&mut self, mut cur_node: OpNode<K, V>) -> OpNode<K, V> {
@@ -1131,5 +1137,24 @@ impl<K: Ord, V> AVL<K, V> {
         } else {
             outs.pop().map(|o| o.1)
         }
+    }
+
+    /// Get a mutable reference of value by key
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// use ABtree::AVL;
+    ///
+    /// let mut t: AVL<u32, u32> = AVL::new();
+    /// t.insert(0, 0);
+    /// t.insert(1, 1);
+    /// t.insert(2, 2);
+    /// let v = t.get_mut(&2);
+    /// v.map(|i| *i += 10);
+    /// assert_eq!(t.get(&2), Some(&12))
+    /// ```    
+    pub fn get_mut(&mut self, k: &K) -> Option<&mut V> {
+        self._get_mut(k)
     }
 }
