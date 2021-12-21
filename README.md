@@ -5,7 +5,7 @@ For the Btree, what makes it different from that of BtreeMap in std is this Btre
 
 ```rust
 [dependencies]
-ABtree = "0.2.0"
+ABtree = "0.4.0"
 ```
 
 # 1.AVL
