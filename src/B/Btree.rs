@@ -9,7 +9,7 @@ use std::ptr::NonNull;
 ///A b-tree with owned nodes
 ///and what makes it different from the BTreeMap in std
 ///is it choose arbitrary number as the maximum number of keys
-///in each node, as long as the number grater or equal to 3
+///in each node, as long as the number greater or equal to 3
 ///Note if the number has been set to 3 it becomes a 2-3 tree
 pub struct BTree<K: Ord, V> {
     root_node: OpNode<K, V>,
