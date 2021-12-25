@@ -302,7 +302,7 @@ impl<K: Ord, V> Node<K, V> {
     /// The caller must guarantee the `new_d` is not None
     /// this method will put new Data in a sorted place
     /// And if the key exists it will update the value
-    fn adding_data(node: OpNode<K, V>, new_d: Option<Data<K, V>>) -> OpNode<K, V> {
+    fn adding_data(node: OpNode<K, V>, new_d: Option<Data<K, V>>, tree: &mut BTree<K, V>) -> OpNode<K, V> {
         let new_d = new_d.unwrap();
         let data = Node::get_inner_data(node);
         let data_size = Node::get_data_size(node);
@@ -328,6 +328,10 @@ impl<K: Ord, V> Node<K, V> {
                         let ordering = x.key.cmp(&new_d.key);
                         match ordering {
                             Ordering::Equal => {
+                                // Given each time the Btree takes in a key-value
+                                // it's length will plus 1 but it's not ok
+                                // so we minus 1 here
+                                tree.len -= 1;
                                 (*inner_d.as_ptr())[idx].value = new_d.value;
                                 break node;
                             }
@@ -387,7 +391,7 @@ impl<K: Ord, V> Node<K, V> {
     /// when the number of keys equals to the maximum
     /// split the node at index of [m / 2] - 1
     /// Note [] here is ceil operation
-    fn split_node(node: OpNode<K, V>, split_idx: usize) -> OpNode<K, V> {
+    fn split_node(node: OpNode<K, V>, split_idx: usize, tree: &mut BTree<K, V>) -> OpNode<K, V> {
         let data = Node::get_inner_data(node);
         let data_size = Node::get_data_size(node);
         let children_size = Node::get_children_size(node);
@@ -398,13 +402,13 @@ impl<K: Ord, V> Node<K, V> {
         let mut right_node: OpNode<K, V> = None;
         while l_n < split_idx {
             let left_data = Node::pop_front_inner_data(data);
-            left_node = Node::adding_data(left_node, left_data);
+            left_node = Node::adding_data(left_node, left_data, tree);
             l_n += 1;
         }
 
         while r_n > 0 {
             let right_data = Node::pop_back_inner_data(data);
-            right_node = Node::adding_data(right_node, right_data);
+            right_node = Node::adding_data(right_node, right_data, tree);
             r_n -= 1;
         }
 
@@ -578,7 +582,7 @@ impl<K: Ord, V> BTree<K, V> {
         loop {
             if cur_node.is_none() {
                 self.len += 1;
-                self.root_node = Node::adding_data(cur_node, Some(Data { key: k, value: v }));
+                self.root_node = Node::adding_data(cur_node, Some(Data { key: k, value: v }), self);
                 break;
             }
             let children_size = Node::get_children_size(cur_node);
@@ -587,7 +591,7 @@ impl<K: Ord, V> BTree<K, V> {
                 continue;
             } else {
                 self.len += 1;
-                let added_node = Node::adding_data(cur_node, Some(Data { key: k, value: v }));
+                let added_node = Node::adding_data(cur_node, Some(Data { key: k, value: v }), self);
                 self._up_merging(added_node);
                 break;
             }
@@ -601,7 +605,7 @@ impl<K: Ord, V> BTree<K, V> {
             let parent = Node::get_parent(cur_node);
             let parent_data_size = Node::get_data_size(parent);
             if data_size >= self.max_key_num {
-                let splitted_node = Node::split_node(cur_node, self.min_key_num);
+                let splitted_node = Node::split_node(cur_node, self.min_key_num, self);
                 if parent.is_none() {
                     self.root_node = splitted_node;
                     break;

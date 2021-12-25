@@ -58,6 +58,7 @@ mod tests {
         let mut btr = BTree::from_iter(data);
         btr.set(8, 91);
         btr.set(10, 100);
+        assert_eq!(btr.len(), 3);
         let v: Vec<_> = btr.into_iter().collect();
         assert_eq!(v, vec![(8, 91), (10, 100), (12, 12)]);
     }
