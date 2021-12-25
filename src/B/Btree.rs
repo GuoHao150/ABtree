@@ -1374,7 +1374,11 @@ impl<K: Ord, V> BTree<K, V> {
     /// assert!(b.contains(&2));
     /// ```   
     pub fn contains(&self, k: &K) -> bool {
-        self.iter().any(|n| n.0.eq(k))
+        if self.is_empty() {
+            false
+        } else {      
+            self.iter().any(|n| n.0.eq(k))
+        }
     }
 
     /// Removing by key

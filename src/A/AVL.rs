@@ -1018,7 +1018,11 @@ impl<K: Ord, V> AVL<K, V> {
     /// assert!(t.contains(&1));
     /// ```
     pub fn contains(&self, k: &K) -> bool {
-        self.iter().any(|n| n.0.eq(k))
+        if self.is_empty() {
+            false
+        } else {
+            self.iter().any(|n| n.0.eq(k))
+        }
     }
 
     /// Removing key-value pair
