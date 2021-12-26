@@ -61,6 +61,16 @@ mod tests {
         assert_eq!(btr.len(), 3);
         let v: Vec<_> = btr.into_iter().collect();
         assert_eq!(v, vec![(8, 91), (10, 100), (12, 12)]);
+
+        let mut btr = BTree::new(3);
+        for (k, v) in [(1, 1), (2, 2), (3, 3)] {
+            btr.insert(k, v);
+        }
+        assert_eq!(btr.get(&2), Some(&2));
+        assert_eq!(btr.len(), 3);
+        btr.insert(2, 20);
+        assert_eq!(btr.get(&2), Some(&20));
+        assert_eq!(btr.len(), 3);
     }
 
     #[test]

@@ -302,7 +302,11 @@ impl<K: Ord, V> Node<K, V> {
     /// The caller must guarantee the `new_d` is not None
     /// this method will put new Data in a sorted place
     /// And if the key exists it will update the value
-    fn adding_data(node: OpNode<K, V>, new_d: Option<Data<K, V>>, tree: &mut BTree<K, V>) -> OpNode<K, V> {
+    fn adding_data(
+        node: OpNode<K, V>,
+        new_d: Option<Data<K, V>>,
+        tree: &mut BTree<K, V>,
+    ) -> OpNode<K, V> {
         let new_d = new_d.unwrap();
         let data = Node::get_inner_data(node);
         let data_size = Node::get_data_size(node);
@@ -587,8 +591,18 @@ impl<K: Ord, V> BTree<K, V> {
             }
             let children_size = Node::get_children_size(cur_node);
             if children_size != 0 {
-                cur_node = Node::moving_target(cur_node, &k);
-                continue;
+                let cur_inner = Node::get_inner_data(cur_node);
+                let contains_k = cur_inner
+                    .as_ref()
+                    .map(|v| unsafe { (*v.as_ptr()).iter().any(|d| d.key.eq(&k)) });
+                if contains_k == Some(true) {
+                    self.len += 1; // because adding_data will minus 1 when equal happens
+                    Node::adding_data(cur_node, Some(Data { key: k, value: v }), self);
+                    break;
+                } else {
+                    cur_node = Node::moving_target(cur_node, &k);
+                    continue;
+                }
             } else {
                 self.len += 1;
                 let added_node = Node::adding_data(cur_node, Some(Data { key: k, value: v }), self);
@@ -1380,7 +1394,7 @@ impl<K: Ord, V> BTree<K, V> {
     pub fn contains(&self, k: &K) -> bool {
         if self.is_empty() {
             false
-        } else {      
+        } else {
             self.iter().any(|n| n.0.eq(k))
         }
     }
