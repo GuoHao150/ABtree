@@ -159,4 +159,34 @@ mod tests {
         let v: Vec<_> = btr.into_iter().collect();
         assert_eq!(v, data2);
     }
+
+    #[test]
+    fn btree_empty_iter() {
+        let b: BTree<u32, u32> = BTree::new(3);
+        assert_eq!(b.iter().next(), None);
+        assert_eq!(b.iter().next_back(), None);
+    }
+
+    #[test]
+    fn avl_empty_iter() {
+        let a: AVL<i32, i32> = AVL::new();
+        assert_eq!(a.iter().next(), None);
+        assert_eq!(a.iter().next_back(), None);
+    }
+
+    #[test]
+    fn btree_empty_into_iter() {
+        let b: BTree<u32, u32> = BTree::new(3);
+        let mut iter = b.into_iter();
+        assert_eq!(iter.next(), None);
+        assert_eq!(iter.next_back(), None);
+    }
+
+    #[test]
+    fn avl_empty_into_iter() {
+        let a: AVL<i32, i32> = AVL::new();
+        let mut iter = a.into_iter();
+        assert_eq!(iter.next(), None);
+        assert_eq!(iter.next_back(), None);
+    }
 }

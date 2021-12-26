@@ -4,4 +4,4 @@ version = 3
 
 [[package]]
 name = "ABtree"
-version = "0.7.0"
+version = "0.8.0"

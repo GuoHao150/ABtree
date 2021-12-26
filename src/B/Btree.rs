@@ -1434,18 +1434,33 @@ impl<K: Ord, V> BTree<K, V> {
     pub fn iter<'a>(&'a self) -> Iter<'a, K, V> {
         let seen = HashSet::new();
         let seen_back = HashSet::new();
-        Iter {
-            next_nodes: vec![NextNodes {
-                node: self.root_node,
-                index: Cell::new(0),
-            }],
-            seen: seen,
-            next_back_nodes: vec![NextNodes {
-                node: self.root_node,
-                index: Cell::new(Node::get_data_size(self.root_node) - 1),
-            }],
-            seen_back: seen_back,
-            _marker: PhantomData,
+        let next_back_nodes_start = if self.root_node.is_some() {
+            Node::get_data_size(self.root_node) - 1
+        } else {
+            0
+        };
+        if self.len > 0 {
+            Iter {
+                next_nodes: vec![NextNodes {
+                    node: self.root_node,
+                    index: Cell::new(0),
+                }],
+                seen: seen,
+                next_back_nodes: vec![NextNodes {
+                    node: self.root_node,
+                    index: Cell::new(next_back_nodes_start),
+                }],
+                seen_back: seen_back,
+                _marker: PhantomData,
+            }
+        } else {
+            Iter {
+                next_nodes: Vec::new(),
+                seen: seen,
+                next_back_nodes: Vec::new(),
+                seen_back: seen_back,
+                _marker: PhantomData,
+            }
         }
     }
 
